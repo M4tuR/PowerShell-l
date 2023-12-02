@@ -14,6 +14,10 @@ foreach ($user in $users){
         $newPassword = GenerateStrongPassword 8
         echo "Lisatud uus kasutaja: $displayname"
         
+$juurkataloog = "C:\Users\$username"
+        if (-not (Test-Path $juurkataloog)) {
+            New-Item -ItemType Directory -Path $juurkataloog
+}
         New-ADUser -Name $username `
                     -DisplayName $displayname `
                     -GivenName $user.FirstName `
@@ -23,6 +27,7 @@ foreach ($user in $users){
                     -UserPrincipalName $upname `
                     -AccountPassword (ConvertTo-SecureString $newPassword -AsPlainText -Force) -Enabled $true
 
+Set-ADUser -Identity $username -HomeDirectory $juurkataloog -HomeDrive "C:"
        
         $results += [PSCustomObject]@{
             "Username" = $username
